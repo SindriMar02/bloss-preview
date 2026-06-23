@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="is">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>bloss — eldur, fullkomnaður</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.3.0/dist/tabler-icons.min.css">
+<style>
+:root{
+ --bg:#c4c7cc; --bg2:#a9acb2;
+ --panel:#1b1d21; --panel2:#26282d; --drape1:#454850; --drape2:#1d1f23;
+ --text:#F3F4F6; --muted:#9ca1a8; --faint:#6b7077; --line:rgba(255,255,255,.09);
+ --ember:#FF5A1F; --flare:#FF8A2B; --gold:#FFB020; --hot:#FFE3BE;
+ --serif:'Fraunces',Georgia,serif; --sans:'Space Grotesk',system-ui,sans-serif; --mono:'Space Mono',monospace;
+ --r:34px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+
+/* lock to one viewport — no scroll */
+html{height:100dvh;overflow:hidden;background:var(--bg)}
+body{
+ font-family:var(--sans);color:var(--text);
+ background:radial-gradient(120% 90% at 50% 0%,#d4d6da,#b6b9bf 60%,#9ea1a7);
+ -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;font-optical-sizing:auto;
+ height:100dvh;overflow:hidden;
+ padding:clamp(8px,1vw,14px);
+}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+/* shell — the big dark studio panel */
+.shell{
+ height:100%;max-width:1480px;margin:0 auto;
+ border-radius:var(--r);position:relative;overflow:hidden;
+ background:
+  radial-gradient(80% 55% at 50% 94%,rgba(255,120,50,.09),transparent 58%),
+  radial-gradient(150% 110% at 50% -5%,rgba(22,24,28,.75) 0%,rgba(14,16,19,.87) 45%,rgba(9,10,12,.91)),
+  url(assets/studio-drape.jpg) center 28%/cover no-repeat;
+ box-shadow:0 50px 120px -40px rgba(0,0,0,.55),0 4px 18px -6px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.06);
+ padding:clamp(14px,1.6vw,26px) clamp(16px,2.4vw,44px) clamp(14px,1.6vw,22px);
+ display:flex;flex-direction:column;gap:0;
+}
+
+/* top nav */
+nav{display:flex;align-items:center;justify-content:space-between;gap:20px;position:relative;z-index:30;flex-shrink:0}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-weight:600;font-size:23px;letter-spacing:-.5px;color:#fff}
+.brand .dot{width:24px;height:24px;border-radius:50%;background:radial-gradient(circle at 38% 32%,#FFE3BE,#FF8A2B 42%,#FF5A1F 72%,#c93e0e);box-shadow:0 0 14px -2px rgba(255,120,45,.65)}
+.navlinks{display:flex;gap:4px;margin-left:16px}
+.navlinks a{font-size:13px;color:#c2c6cc;padding:8px 13px;border-radius:10px;transition:.25s;position:relative}
+.navlinks a:hover{color:#fff;background:rgba(255,255,255,.06)}
+.navlinks a.active{color:#fff}
+.navlinks a.active::after{content:"";position:absolute;left:13px;right:13px;bottom:3px;height:2px;border-radius:2px;background:var(--ember)}
+.navr{display:flex;align-items:center;gap:10px}
+.iconbtn{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:18px;color:#d3d7dc;background:rgba(255,255,255,.05);border:1px solid var(--line);transition:.25s}
+.iconbtn:hover{color:#fff;background:rgba(255,255,255,.10);transform:translateY(-1px)}
+.cart-c{position:relative}
+.cart-c .b{position:absolute;top:-3px;right:-3px;width:16px;height:16px;border-radius:50%;background:var(--ember);color:#1a0a03;font-family:var(--mono);font-size:9px;display:grid;place-items:center}
+.order{padding:10px 22px;border-radius:30px;background:#fff;color:#16181b;font-weight:600;font-size:13px;display:inline-flex;align-items:center;gap:8px;transition:.25s;white-space:nowrap}
+.order:hover{transform:translateY(-2px);box-shadow:0 12px 28px -10px rgba(0,0,0,.5)}
+
+/* main configurator — fills remaining height */
+.config{
+ flex:1;min-height:0;
+ display:grid;grid-template-rows:auto 1fr auto;gap:4px;
+ padding-top:4px;
+}
+
+/* top info row */
+.toprow{display:grid;grid-template-columns:1.1fr .9fr;align-items:start;gap:24px;position:relative;z-index:20}
+.eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:3px;text-transform:uppercase;color:var(--flare)}
+h1.prod{font-family:var(--serif);font-weight:600;font-size:clamp(34px,4.4vw,72px);line-height:.93;letter-spacing:-1.5px;color:#fff;margin-top:8px;font-variation-settings:'opsz' 144}
+.sub{display:flex;align-items:center;gap:14px;margin-top:10px;font-family:var(--mono);font-size:12px;color:var(--muted)}
+.sub .sku{color:var(--faint)}
+.desc{max-width:340px;justify-self:end;padding-top:10px}
+.desc p{font-size:13.5px;line-height:1.62;color:#aab0b7}
+.desc .more{display:inline-flex;align-items:center;gap:6px;margin-top:10px;color:var(--gold);font-size:12.5px;font-weight:500;border-bottom:1px solid rgba(255,176,32,.4);padding-bottom:2px}
+
+/* product stage */
+.stage{
+ position:relative;min-height:0;
+ display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:0;
+}
+.drape{position:absolute;left:50%;top:50%;width:min(88%,1060px);height:min(70%,480px);transform:translate(-50%,-50%);
+ background:radial-gradient(56% 58% at 50% 44%,rgba(255,255,255,.04),transparent 70%);pointer-events:none;z-index:0}
+.floor{position:absolute;left:50%;bottom:6%;width:min(72%,780px);height:70px;transform:translateX(-50%);
+ background:radial-gradient(closest-side,rgba(0,0,0,.5),rgba(0,0,0,.18) 55%,transparent 80%);filter:blur(8px);z-index:1;pointer-events:none}
+
+/* the rotating render = full-bleed background of the whole shell */
+.viewer{
+ position:absolute;inset:0;z-index:1;
+ overflow:hidden;
+ touch-action:pan-y;cursor:grab;user-select:none;
+}
+.viewer.drag{cursor:grabbing}
+.viewer .frame{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;will-change:opacity;filter:drop-shadow(0 28px 22px rgba(0,0,0,.55));-webkit-user-drag:none;user-select:none;pointer-events:none}
+.viewer .frame.on{opacity:1}
+.shell{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.viewer.fullrender .frame{inset:0;width:100%;height:100%;object-fit:cover;filter:none}
+/* legibility scrim over the render: darkens top (nav) + bottom (price/specs), keeps centre clear */
+.viewer::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+ background:linear-gradient(180deg,rgba(9,10,12,.5) 0%,transparent 20%,transparent 60%,rgba(9,10,12,.62) 100%)}
+.viewer.fullrender .badge360{display:none}
+/* content overlays the render; drags pass THROUGH to the render except on real controls */
+.config{pointer-events:none}
+.config a,.config button,.config .track,.config .sw,.config .spec,.config .cta{pointer-events:auto}
+.badge360{position:absolute;left:16px;top:12px;z-index:5;display:inline-flex;align-items:center;gap:7px;font-family:var(--mono);font-size:11px;letter-spacing:1px;color:#dfe3e7;background:rgba(14,15,17,.52);border:1px solid var(--line);backdrop-filter:blur(8px);padding:6px 12px;border-radius:30px}
+.badge360 i{color:var(--flare);font-size:13px}
+.spinhint{position:absolute;left:50%;bottom:5%;transform:translateX(-50%);z-index:5;font-family:var(--mono);font-size:10px;letter-spacing:1.5px;color:#aeb3b9;display:flex;align-items:center;gap:8px;opacity:.85;transition:opacity .4s;pointer-events:none}
+.spinhint.hide{opacity:0}
+
+/* scrubber — sits between actionrow and specs */
+.scrub{width:100%;margin:8px 0 6px;display:flex;align-items:center;gap:12px;position:relative;z-index:6}
+.scrub .track{flex:1;height:3px;border-radius:4px;background:rgba(255,255,255,.12);position:relative;cursor:pointer}
+.scrub .fill{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:linear-gradient(90deg,var(--ember),var(--gold));width:0}
+.scrub .knob{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;background:#fff;transform:translate(-50%,-50%);box-shadow:0 2px 8px rgba(0,0,0,.5);left:0}
+.scrub .deg{font-family:var(--mono);font-size:11px;color:var(--muted);width:38px;text-align:right}
+.scrub .auto{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.06);border:1px solid var(--line);color:#d3d7dc;font-size:15px;transition:.2s;flex-shrink:0}
+.scrub .auto:hover{color:#fff;background:rgba(255,255,255,.12)}
+
+/* bottom: price / cta / variants */
+.actionrow{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:20px;position:relative;z-index:20;margin-top:2px}
+.price .lbl{font-size:11px;color:var(--muted);font-family:var(--mono);letter-spacing:1px}
+.price .v{font-family:var(--serif);font-weight:600;font-size:clamp(26px,3vw,44px);color:#fff;letter-spacing:-1px;line-height:1}
+.price .fin{font-family:var(--mono);font-size:11px;color:var(--gold);margin-top:4px}
+.ctamid{display:flex;align-items:center;gap:10px;justify-content:center}
+.cta{padding:14px 30px;border-radius:32px;background:var(--ember);color:#1a0a03;font-weight:600;font-size:14px;display:inline-flex;align-items:center;gap:9px;transition:.25s;box-shadow:0 14px 36px -12px rgba(255,90,31,.6)}
+.cta:hover{transform:translateY(-2px);box-shadow:0 20px 46px -14px rgba(255,90,31,.75)}
+.cta-ghost{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.06);border:1px solid var(--line);color:#d3d7dc;font-size:19px;transition:.25s}
+.cta-ghost:hover{color:#fff;background:rgba(255,255,255,.12);transform:translateY(-2px)}
+.variants{justify-self:end;display:flex;align-items:center;gap:12px}
+.variants .lbl{font-size:11px;color:var(--muted);font-family:var(--mono);letter-spacing:1px}
+.swatches{display:flex;gap:8px}
+.sw{width:38px;height:38px;border-radius:11px;border:1.5px solid var(--line);background:#2a2c30;cursor:pointer;display:grid;place-items:center;font-family:var(--mono);font-size:10.5px;color:#aeb3b9;transition:.22s;position:relative;overflow:hidden}
+.sw:hover{transform:translateY(-2px);color:#fff}
+.sw.active{border-color:var(--ember);color:#fff;box-shadow:0 0 0 3px rgba(255,90,31,.18)}
+
+/* spec tiles */
+.specs{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:16px;position:relative;z-index:20}
+.spec{background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.13);border-radius:16px;padding:13px 10px;text-align:center;transition:.25s}
+.spec:hover{transform:translateY(-3px);border-color:rgba(255,138,43,.4);background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03))}
+.spec i{font-size:19px;color:#c0c5cb}
+.spec .k{font-size:10px;color:var(--muted);margin-top:7px;letter-spacing:.4px}
+.spec .val{font-size:13.5px;color:#fff;font-weight:500;margin-top:2px}
+
+/* reveal anim */
+.rv{opacity:0;transform:translateY(18px);filter:blur(5px)}
+.rv.in{opacity:1;transform:none;filter:none;transition:opacity .8s cubic-bezier(.2,.7,.25,1),transform .8s cubic-bezier(.2,.7,.25,1),filter .8s}
+
+@media(max-width:1080px){
+ .toprow{grid-template-columns:1fr}.desc{justify-self:start;max-width:none}
+ .actionrow{grid-template-columns:1fr;justify-items:center;gap:14px;text-align:center}.variants{justify-self:center}.price{text-align:center}
+ .specs{grid-template-columns:repeat(3,1fr)}
+ .navlinks{display:none}
+}
+@media(max-width:560px){.specs{grid-template-columns:repeat(2,1fr)}h1.prod{font-size:38px}.viewer{width:96%}}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;filter:none}}
+
+/* ── model pan transition (canvas) ── */
+#pan-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:8;display:none;pointer-events:none}
+
+/* ───── react-bits BorderGlow → ported to vanilla CSS (ember) ───── */
+@property --bg-angle{syntax:"<angle>";inherits:true;initial-value:0deg}
+@keyframes bg-spin{to{--bg-angle:360deg}}
+.spec,.cta{position:relative;isolation:isolate}
+/* BorderGlow — pointer-tracked arc, appears only on hover */
+.spec::before{
+ content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;pointer-events:none;
+ background:conic-gradient(from var(--bg-angle),transparent 0deg,transparent 250deg,var(--flare) 300deg,var(--hot) 325deg,var(--flare) 350deg,transparent 360deg);
+ -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+         mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+ -webkit-mask-composite:xor;mask-composite:exclude;
+ opacity:0;transition:opacity .25s,--bg-angle .18s ease-out}
+.spec.glow-on::before{opacity:.9}
+.spec.glow-on{box-shadow:0 10px 30px -12px rgba(255,90,31,.5)}
+/* primary CTA: white-hot edge + soft outer bloom, pointer-tracked */
+.cta::before{
+ content:"";position:absolute;inset:0;border-radius:inherit;padding:1.5px;pointer-events:none;z-index:2;
+ background:conic-gradient(from var(--bg-angle),transparent 0deg,transparent 235deg,#fff 300deg,var(--hot) 325deg,#fff 350deg,transparent 360deg);
+ -webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+         mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+ -webkit-mask-composite:xor;mask-composite:exclude;
+ opacity:0;transition:opacity .25s,--bg-angle .18s ease-out}
+.cta::after{
+ content:"";position:absolute;inset:-3px;border-radius:inherit;z-index:-1;pointer-events:none;
+ background:conic-gradient(from var(--bg-angle),transparent 0deg,transparent 250deg,var(--flare) 300deg,var(--hot) 330deg,var(--flare) 355deg,transparent 360deg);
+ filter:blur(8px);opacity:0;transition:opacity .25s,--bg-angle .18s ease-out}
+.cta.glow-on::before{opacity:.95}
+.cta.glow-on::after{opacity:.75}
+
+/* ───────────── ENTRANCE LOADER — "furnace ignition" ───────────── */
+.loader{
+ position:fixed;inset:0;z-index:9999;overflow:hidden;
+ background:
+  radial-gradient(140% 120% at 50% -8%,#16181c,#0b0c0e 55%,#08090b);
+ display:flex;align-items:center;justify-content:center;
+ transition:transform 1.25s cubic-bezier(.66,0,.34,1);
+ will-change:transform}
+.loader.lift{transform:translateY(-101%)}
+.loader.gone{display:none}
+/* swelling oven heat rising from the bottom */
+.ldr-glow{
+ position:absolute;left:50%;bottom:-24%;transform:translateX(-50%);
+ width:82%;height:60%;pointer-events:none;opacity:.12;transition:opacity .25s;
+ background:radial-gradient(closest-side,rgba(255,120,45,.6),rgba(255,80,25,.2) 46%,transparent 72%);
+ filter:blur(16px);mix-blend-mode:screen}
+/* bright furnace-door bottom edge, revealed as it lifts */
+.loader::after{
+ content:"";position:absolute;left:0;right:0;bottom:0;height:2px;opacity:0;transition:opacity .35s;
+ background:linear-gradient(90deg,transparent,var(--flare),var(--hot),var(--flare),transparent);
+ box-shadow:0 0 26px 5px rgba(255,130,50,.7)}
+.loader.lift::after{opacity:1}
+/* rising sparks */
+.ldr-sparks{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.ldr-sparks i{
+ position:absolute;bottom:-12px;width:3px;height:3px;border-radius:50%;
+ background:radial-gradient(circle,#FFE3BE,#FF8A2B 60%,transparent);
+ opacity:0;animation:ldrSpark linear infinite}
+@keyframes ldrSpark{
+ 0%{transform:translateY(0) scale(1);opacity:0}
+ 12%{opacity:.9}80%{opacity:.6}
+ 100%{transform:translateY(-82vh) scale(.35);opacity:0}}
+.ldr-core{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:26px;padding:0 24px}
+.ldr-mark{
+ font-family:var(--serif);font-weight:600;font-size:clamp(48px,9vw,104px);letter-spacing:-.03em;color:#fff;line-height:1;
+ display:flex;align-items:center;gap:.32em;
+ opacity:0;transform:translateY(16px);animation:ldrIn 1s .08s cubic-bezier(.2,.7,.2,1) forwards}
+.ldr-dot{
+ width:.58em;height:.58em;border-radius:50%;
+ background:radial-gradient(circle at 38% 32%,#3a3d44,#23252a 62%);
+ box-shadow:0 0 0 0 rgba(255,120,45,0);
+ transition:background .45s,box-shadow .45s,transform .45s cubic-bezier(.2,1.3,.3,1)}
+.ldr-dot.lit{
+ background:radial-gradient(circle at 38% 32%,#FFE3BE,#FF8A2B 42%,#FF5A1F 72%,#c93e0e);
+ box-shadow:0 0 38px 7px rgba(255,120,45,.78)}
+.ldr-dot.flare{transform:scale(1.22)}
+.ldr-track{
+ position:relative;width:clamp(220px,32vw,420px);height:1.5px;border-radius:2px;background:rgba(255,255,255,.1);overflow:hidden;
+ opacity:0;animation:ldrIn 1s .34s cubic-bezier(.2,.7,.2,1) forwards}
+.ldr-fill{
+ position:absolute;left:0;top:0;height:100%;width:0%;
+ background:linear-gradient(90deg,var(--ember),var(--flare),var(--hot));
+ box-shadow:0 0 12px 1px rgba(255,130,50,.7)}
+.ldr-meta{
+ width:clamp(220px,32vw,420px);display:flex;justify-content:space-between;align-items:baseline;font-family:var(--mono);
+ opacity:0;animation:ldrIn 1s .5s cubic-bezier(.2,.7,.2,1) forwards}
+.ldr-tag{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--muted)}
+.ldr-num{font-size:14px;letter-spacing:1px;color:var(--flare)}
+.ldr-num b{color:#fff;font-weight:400}
+@keyframes ldrIn{to{opacity:1;transform:none}}
+@media(prefers-reduced-motion:reduce){
+ .loader{transition:opacity .5s}.loader.lift{transform:none;opacity:0}.ldr-sparks,.ldr-glow{display:none}}
+</style>
+</head>
+<body>
+<div class="loader" id="loader">
+ <div class="ldr-glow"></div>
+ <div class="ldr-sparks">
+  <i style="left:12%;animation-duration:3.2s;animation-delay:.1s"></i>
+  <i style="left:22%;animation-duration:4.1s;animation-delay:.9s;width:2px;height:2px"></i>
+  <i style="left:34%;animation-duration:2.8s;animation-delay:.4s"></i>
+  <i style="left:43%;animation-duration:3.7s;animation-delay:1.5s;width:4px;height:4px"></i>
+  <i style="left:51%;animation-duration:3.1s;animation-delay:.7s"></i>
+  <i style="left:58%;animation-duration:4.3s;animation-delay:.2s;width:2px;height:2px"></i>
+  <i style="left:66%;animation-duration:2.9s;animation-delay:1.1s"></i>
+  <i style="left:74%;animation-duration:3.9s;animation-delay:.5s;width:4px;height:4px"></i>
+  <i style="left:84%;animation-duration:3.4s;animation-delay:1.3s"></i>
+  <i style="left:90%;animation-duration:4.0s;animation-delay:.3s;width:2px;height:2px"></i>
+ </div>
+ <div class="ldr-core">
+  <div class="ldr-mark"><span class="ldr-dot"></span>bloss</div>
+  <div class="ldr-track"><div class="ldr-fill" id="ldrFill"></div></div>
+  <div class="ldr-meta"><span class="ldr-tag" id="ldrTag">Kveiki í glæðunum</span><span class="ldr-num" id="ldrNum"><b>00</b>%</span></div>
+ </div>
+</div>
+<div class="shell">
+ <div class="viewer" id="viewer">
+  <canvas id="pan-canvas"></canvas>
+  <div class="badge360"><i class="ti ti-rotate-360"></i> 360°</div>
+  <span class="spinhint" id="spinhint"><i class="ti ti-arrows-horizontal"></i> Dragðu til að snúa</span>
+ </div>
+ <nav>
+  <div style="display:flex;align-items:center">
+   <div class="brand"><span class="dot"></span>bloss</div>
+   <div class="navlinks">
+    <a class="active">Pizzaofnar</a><a>Eldstæði</a><a>Kerti</a><a>Leiga</a><a>Sagan</a>
+   </div>
+  </div>
+  <div class="navr">
+   <button class="iconbtn" aria-label="Leit"><i class="ti ti-search"></i></button>
+   <button class="iconbtn" aria-label="Óskalisti"><i class="ti ti-heart"></i></button>
+   <button class="iconbtn cart-c" aria-label="Karfa"><i class="ti ti-shopping-bag"></i><span class="b">1</span></button>
+   <button class="order">Setja í körfu</button>
+  </div>
+ </nav>
+
+ <div class="config">
+  <div class="toprow">
+   <div>
+    <div class="eyebrow rv" id="eyebrow">Pizzaofn · Gas</div>
+    <h1 class="prod rv">Glowen<br>Dragon&nbsp;14"</h1>
+    <div class="sub rv"><span>2025</span><span class="sku" id="prodsku">#GLW-DRG-14</span><span style="color:var(--gold)">★★★★★ 4,8</span></div>
+   </div>
+   <div class="desc rv">
+    <p id="proddesc">Glowen Dragon 14" nær 500°C á augabragði og bakar ekta steinbakaða pizzu á 60–90 sekúndum. Rolling Flame™ loginn leikur jafnt yfir botninn — fyrir fullkomna áferð í hvert sinn.</p>
+    <a class="more">Lesa meira <i class="ti ti-arrow-right"></i></a>
+   </div>
+  </div>
+
+  <div class="stage"></div>
+
+  <div>
+   <div class="actionrow">
+    <div class="price rv">
+     <div class="lbl">Verð</div>
+     <div class="v" id="priceval">74.990 kr.</div>
+     <div class="fin">eða 6.249 kr./mán × 12</div>
+    </div>
+    <div class="ctamid rv">
+     <button class="cta-ghost" aria-label="Spjall"><i class="ti ti-message-2"></i></button>
+     <button class="cta">Bæta í körfu <i class="ti ti-arrow-right"></i></button>
+     <button class="cta-ghost" aria-label="Hringja"><i class="ti ti-phone"></i></button>
+    </div>
+    <div class="variants rv">
+     <span class="lbl">Gerð</span>
+     <div class="swatches" id="swatches">
+      <button class="sw active" data-m="d14" title="Dragon 14&quot;">D14</button>
+      <button class="sw" data-m="d17" title="Dragon 17&quot;">D17</button>
+      <button class="sw" data-m="raptor" title="Raptor">RPT</button>
+     </div>
+    </div>
+   </div>
+
+   <div class="scrub rv">
+    <button class="auto" id="autobtn" aria-label="Snúa sjálfvirkt"><i class="ti ti-player-play"></i></button>
+    <div class="track" id="track"><div class="fill" id="fill"></div><div class="knob" id="knob"></div></div>
+    <span class="deg" id="deg">0°</span>
+   </div>
+
+   <div class="specs">
+    <div class="spec rv"><i class="ti ti-flame"></i><div class="k">Eldsneyti</div><div class="val" id="sfuel">Gas</div></div>
+    <div class="spec rv"><i class="ti ti-temperature"></i><div class="k">Hámarkshiti</div><div class="val" id="stemp">500°C</div></div>
+    <div class="spec rv"><i class="ti ti-clock-hour-4"></i><div class="k">Bökunartími</div><div class="val" id="stime">60 sek</div></div>
+    <div class="spec rv"><i class="ti ti-ruler-2"></i><div class="k">Pizzustærð</div><div class="val" id="ssize">14"</div></div>
+    <div class="spec rv"><i class="ti ti-weight"></i><div class="k">Þyngd</div><div class="val" id="swgt">12 kg</div></div>
+    <div class="spec rv"><i class="ti ti-shield-bolt"></i><div class="k">Efni</div><div class="val">Ryðfrítt</div></div>
+   </div>
+  </div>
+ </div>
+</div>
+
+<script>
+(function(){
+ var FRAMES={
+  d14:['assets/360/dragon-360/frame-000.webp','assets/360/dragon-360/frame-001.webp','assets/360/dragon-360/frame-002.webp','assets/360/dragon-360/frame-003.webp','assets/360/dragon-360/frame-004.webp','assets/360/dragon-360/frame-005.webp','assets/360/dragon-360/frame-006.webp','assets/360/dragon-360/frame-007.webp','assets/360/dragon-360/frame-008.webp','assets/360/dragon-360/frame-009.webp','assets/360/dragon-360/frame-010.webp','assets/360/dragon-360/frame-011.webp','assets/360/dragon-360/frame-012.webp','assets/360/dragon-360/frame-013.webp','assets/360/dragon-360/frame-014.webp','assets/360/dragon-360/frame-015.webp','assets/360/dragon-360/frame-016.webp','assets/360/dragon-360/frame-017.webp','assets/360/dragon-360/frame-018.webp','assets/360/dragon-360/frame-019.webp','assets/360/dragon-360/frame-020.webp','assets/360/dragon-360/frame-021.webp','assets/360/dragon-360/frame-022.webp','assets/360/dragon-360/frame-023.webp','assets/360/dragon-360/frame-024.webp','assets/360/dragon-360/frame-025.webp','assets/360/dragon-360/frame-026.webp','assets/360/dragon-360/frame-027.webp','assets/360/dragon-360/frame-028.webp','assets/360/dragon-360/frame-029.webp','assets/360/dragon-360/frame-030.webp','assets/360/dragon-360/frame-031.webp','assets/360/dragon-360/frame-032.webp','assets/360/dragon-360/frame-033.webp','assets/360/dragon-360/frame-034.webp','assets/360/dragon-360/frame-035.webp','assets/360/dragon-360/frame-036.webp','assets/360/dragon-360/frame-037.webp','assets/360/dragon-360/frame-038.webp','assets/360/dragon-360/frame-039.webp','assets/360/dragon-360/frame-040.webp','assets/360/dragon-360/frame-041.webp','assets/360/dragon-360/frame-042.webp','assets/360/dragon-360/frame-043.webp','assets/360/dragon-360/frame-044.webp','assets/360/dragon-360/frame-045.webp','assets/360/dragon-360/frame-046.webp','assets/360/dragon-360/frame-047.webp','assets/360/dragon-360/frame-048.webp','assets/360/dragon-360/frame-049.webp','assets/360/dragon-360/frame-050.webp','assets/360/dragon-360/frame-051.webp','assets/360/dragon-360/frame-052.webp','assets/360/dragon-360/frame-053.webp','assets/360/dragon-360/frame-054.webp','assets/360/dragon-360/frame-055.webp','assets/360/dragon-360/frame-056.webp','assets/360/dragon-360/frame-057.webp','assets/360/dragon-360/frame-058.webp','assets/360/dragon-360/frame-059.webp','assets/360/dragon-360/frame-060.webp','assets/360/dragon-360/frame-061.webp','assets/360/dragon-360/frame-062.webp','assets/360/dragon-360/frame-063.webp','assets/360/dragon-360/frame-064.webp','assets/360/dragon-360/frame-065.webp','assets/360/dragon-360/frame-066.webp','assets/360/dragon-360/frame-067.webp','assets/360/dragon-360/frame-068.webp','assets/360/dragon-360/frame-069.webp','assets/360/dragon-360/frame-070.webp','assets/360/dragon-360/frame-071.webp','assets/360/dragon-360/frame-072.webp','assets/360/dragon-360/frame-073.webp','assets/360/dragon-360/frame-074.webp','assets/360/dragon-360/frame-075.webp','assets/360/dragon-360/frame-076.webp','assets/360/dragon-360/frame-077.webp','assets/360/dragon-360/frame-078.webp','assets/360/dragon-360/frame-079.webp','assets/360/dragon-360/frame-080.webp','assets/360/dragon-360/frame-081.webp','assets/360/dragon-360/frame-082.webp','assets/360/dragon-360/frame-083.webp','assets/360/dragon-360/frame-084.webp','assets/360/dragon-360/frame-085.webp','assets/360/dragon-360/frame-086.webp','assets/360/dragon-360/frame-087.webp','assets/360/dragon-360/frame-088.webp','assets/360/dragon-360/frame-089.webp','assets/360/dragon-360/frame-090.webp','assets/360/dragon-360/frame-091.webp','assets/360/dragon-360/frame-092.webp','assets/360/dragon-360/frame-093.webp','assets/360/dragon-360/frame-094.webp','assets/360/dragon-360/frame-095.webp','assets/360/dragon-360/frame-096.webp','assets/360/dragon-360/frame-097.webp','assets/360/dragon-360/frame-098.webp','assets/360/dragon-360/frame-099.webp','assets/360/dragon-360/frame-100.webp','assets/360/dragon-360/frame-101.webp','assets/360/dragon-360/frame-102.webp','assets/360/dragon-360/frame-103.webp','assets/360/dragon-360/frame-104.webp','assets/360/dragon-360/frame-105.webp','assets/360/dragon-360/frame-106.webp','assets/360/dragon-360/frame-107.webp','assets/360/dragon-360/frame-108.webp','assets/360/dragon-360/frame-109.webp','assets/360/dragon-360/frame-110.webp','assets/360/dragon-360/frame-111.webp','assets/360/dragon-360/frame-112.webp','assets/360/dragon-360/frame-113.webp','assets/360/dragon-360/frame-114.webp','assets/360/dragon-360/frame-115.webp','assets/360/dragon-360/frame-116.webp','assets/360/dragon-360/frame-117.webp','assets/360/dragon-360/frame-118.webp','assets/360/dragon-360/frame-119.webp','assets/360/dragon-360/frame-120.webp','assets/360/dragon-360/frame-121.webp','assets/360/dragon-360/frame-122.webp','assets/360/dragon-360/frame-123.webp','assets/360/dragon-360/frame-124.webp','assets/360/dragon-360/frame-125.webp','assets/360/dragon-360/frame-126.webp','assets/360/dragon-360/frame-127.webp','assets/360/dragon-360/frame-128.webp','assets/360/dragon-360/frame-129.webp','assets/360/dragon-360/frame-130.webp','assets/360/dragon-360/frame-131.webp','assets/360/dragon-360/frame-132.webp','assets/360/dragon-360/frame-133.webp','assets/360/dragon-360/frame-134.webp','assets/360/dragon-360/frame-135.webp','assets/360/dragon-360/frame-136.webp','assets/360/dragon-360/frame-137.webp','assets/360/dragon-360/frame-138.webp','assets/360/dragon-360/frame-139.webp','assets/360/dragon-360/frame-140.webp','assets/360/dragon-360/frame-141.webp','assets/360/dragon-360/frame-142.webp','assets/360/dragon-360/frame-143.webp','assets/360/dragon-360/frame-144.webp','assets/360/dragon-360/frame-145.webp','assets/360/dragon-360/frame-146.webp','assets/360/dragon-360/frame-147.webp','assets/360/dragon-360/frame-148.webp','assets/360/dragon-360/frame-149.webp','assets/360/dragon-360/frame-150.webp','assets/360/dragon-360/frame-151.webp','assets/360/dragon-360/frame-152.webp','assets/360/dragon-360/frame-153.webp','assets/360/dragon-360/frame-154.webp','assets/360/dragon-360/frame-155.webp','assets/360/dragon-360/frame-156.webp','assets/360/dragon-360/frame-157.webp','assets/360/dragon-360/frame-158.webp','assets/360/dragon-360/frame-159.webp','assets/360/dragon-360/frame-160.webp','assets/360/dragon-360/frame-161.webp','assets/360/dragon-360/frame-162.webp','assets/360/dragon-360/frame-163.webp','assets/360/dragon-360/frame-164.webp','assets/360/dragon-360/frame-165.webp','assets/360/dragon-360/frame-166.webp','assets/360/dragon-360/frame-167.webp','assets/360/dragon-360/frame-168.webp','assets/360/dragon-360/frame-169.webp','assets/360/dragon-360/frame-170.webp','assets/360/dragon-360/frame-171.webp','assets/360/dragon-360/frame-172.webp','assets/360/dragon-360/frame-173.webp','assets/360/dragon-360/frame-174.webp','assets/360/dragon-360/frame-175.webp','assets/360/dragon-360/frame-176.webp','assets/360/dragon-360/frame-177.webp','assets/360/dragon-360/frame-178.webp','assets/360/dragon-360/frame-179.webp','assets/360/dragon-360/frame-180.webp','assets/360/dragon-360/frame-181.webp','assets/360/dragon-360/frame-182.webp','assets/360/dragon-360/frame-183.webp','assets/360/dragon-360/frame-184.webp','assets/360/dragon-360/frame-185.webp','assets/360/dragon-360/frame-186.webp','assets/360/dragon-360/frame-187.webp','assets/360/dragon-360/frame-188.webp','assets/360/dragon-360/frame-189.webp','assets/360/dragon-360/frame-190.webp'],
+  d17:['assets/360/dragon-360/frame-000.webp','assets/360/dragon-360/frame-001.webp','assets/360/dragon-360/frame-002.webp','assets/360/dragon-360/frame-003.webp','assets/360/dragon-360/frame-004.webp','assets/360/dragon-360/frame-005.webp','assets/360/dragon-360/frame-006.webp','assets/360/dragon-360/frame-007.webp','assets/360/dragon-360/frame-008.webp','assets/360/dragon-360/frame-009.webp','assets/360/dragon-360/frame-010.webp','assets/360/dragon-360/frame-011.webp','assets/360/dragon-360/frame-012.webp','assets/360/dragon-360/frame-013.webp','assets/360/dragon-360/frame-014.webp','assets/360/dragon-360/frame-015.webp','assets/360/dragon-360/frame-016.webp','assets/360/dragon-360/frame-017.webp','assets/360/dragon-360/frame-018.webp','assets/360/dragon-360/frame-019.webp','assets/360/dragon-360/frame-020.webp','assets/360/dragon-360/frame-021.webp','assets/360/dragon-360/frame-022.webp','assets/360/dragon-360/frame-023.webp','assets/360/dragon-360/frame-024.webp','assets/360/dragon-360/frame-025.webp','assets/360/dragon-360/frame-026.webp','assets/360/dragon-360/frame-027.webp','assets/360/dragon-360/frame-028.webp','assets/360/dragon-360/frame-029.webp','assets/360/dragon-360/frame-030.webp','assets/360/dragon-360/frame-031.webp','assets/360/dragon-360/frame-032.webp','assets/360/dragon-360/frame-033.webp','assets/360/dragon-360/frame-034.webp','assets/360/dragon-360/frame-035.webp','assets/360/dragon-360/frame-036.webp','assets/360/dragon-360/frame-037.webp','assets/360/dragon-360/frame-038.webp','assets/360/dragon-360/frame-039.webp','assets/360/dragon-360/frame-040.webp','assets/360/dragon-360/frame-041.webp','assets/360/dragon-360/frame-042.webp','assets/360/dragon-360/frame-043.webp','assets/360/dragon-360/frame-044.webp','assets/360/dragon-360/frame-045.webp','assets/360/dragon-360/frame-046.webp','assets/360/dragon-360/frame-047.webp','assets/360/dragon-360/frame-048.webp','assets/360/dragon-360/frame-049.webp','assets/360/dragon-360/frame-050.webp','assets/360/dragon-360/frame-051.webp','assets/360/dragon-360/frame-052.webp','assets/360/dragon-360/frame-053.webp','assets/360/dragon-360/frame-054.webp','assets/360/dragon-360/frame-055.webp','assets/360/dragon-360/frame-056.webp','assets/360/dragon-360/frame-057.webp','assets/360/dragon-360/frame-058.webp','assets/360/dragon-360/frame-059.webp','assets/360/dragon-360/frame-060.webp','assets/360/dragon-360/frame-061.webp','assets/360/dragon-360/frame-062.webp','assets/360/dragon-360/frame-063.webp','assets/360/dragon-360/frame-064.webp','assets/360/dragon-360/frame-065.webp','assets/360/dragon-360/frame-066.webp','assets/360/dragon-360/frame-067.webp','assets/360/dragon-360/frame-068.webp','assets/360/dragon-360/frame-069.webp','assets/360/dragon-360/frame-070.webp','assets/360/dragon-360/frame-071.webp','assets/360/dragon-360/frame-072.webp','assets/360/dragon-360/frame-073.webp','assets/360/dragon-360/frame-074.webp','assets/360/dragon-360/frame-075.webp','assets/360/dragon-360/frame-076.webp','assets/360/dragon-360/frame-077.webp','assets/360/dragon-360/frame-078.webp','assets/360/dragon-360/frame-079.webp','assets/360/dragon-360/frame-080.webp','assets/360/dragon-360/frame-081.webp','assets/360/dragon-360/frame-082.webp','assets/360/dragon-360/frame-083.webp','assets/360/dragon-360/frame-084.webp','assets/360/dragon-360/frame-085.webp','assets/360/dragon-360/frame-086.webp','assets/360/dragon-360/frame-087.webp','assets/360/dragon-360/frame-088.webp','assets/360/dragon-360/frame-089.webp','assets/360/dragon-360/frame-090.webp','assets/360/dragon-360/frame-091.webp','assets/360/dragon-360/frame-092.webp','assets/360/dragon-360/frame-093.webp','assets/360/dragon-360/frame-094.webp','assets/360/dragon-360/frame-095.webp','assets/360/dragon-360/frame-096.webp','assets/360/dragon-360/frame-097.webp','assets/360/dragon-360/frame-098.webp','assets/360/dragon-360/frame-099.webp','assets/360/dragon-360/frame-100.webp','assets/360/dragon-360/frame-101.webp','assets/360/dragon-360/frame-102.webp','assets/360/dragon-360/frame-103.webp','assets/360/dragon-360/frame-104.webp','assets/360/dragon-360/frame-105.webp','assets/360/dragon-360/frame-106.webp','assets/360/dragon-360/frame-107.webp','assets/360/dragon-360/frame-108.webp','assets/360/dragon-360/frame-109.webp','assets/360/dragon-360/frame-110.webp','assets/360/dragon-360/frame-111.webp','assets/360/dragon-360/frame-112.webp','assets/360/dragon-360/frame-113.webp','assets/360/dragon-360/frame-114.webp','assets/360/dragon-360/frame-115.webp','assets/360/dragon-360/frame-116.webp','assets/360/dragon-360/frame-117.webp','assets/360/dragon-360/frame-118.webp','assets/360/dragon-360/frame-119.webp','assets/360/dragon-360/frame-120.webp','assets/360/dragon-360/frame-121.webp','assets/360/dragon-360/frame-122.webp','assets/360/dragon-360/frame-123.webp','assets/360/dragon-360/frame-124.webp','assets/360/dragon-360/frame-125.webp','assets/360/dragon-360/frame-126.webp','assets/360/dragon-360/frame-127.webp','assets/360/dragon-360/frame-128.webp','assets/360/dragon-360/frame-129.webp','assets/360/dragon-360/frame-130.webp','assets/360/dragon-360/frame-131.webp','assets/360/dragon-360/frame-132.webp','assets/360/dragon-360/frame-133.webp','assets/360/dragon-360/frame-134.webp','assets/360/dragon-360/frame-135.webp','assets/360/dragon-360/frame-136.webp','assets/360/dragon-360/frame-137.webp','assets/360/dragon-360/frame-138.webp','assets/360/dragon-360/frame-139.webp','assets/360/dragon-360/frame-140.webp','assets/360/dragon-360/frame-141.webp','assets/360/dragon-360/frame-142.webp','assets/360/dragon-360/frame-143.webp','assets/360/dragon-360/frame-144.webp','assets/360/dragon-360/frame-145.webp','assets/360/dragon-360/frame-146.webp','assets/360/dragon-360/frame-147.webp','assets/360/dragon-360/frame-148.webp','assets/360/dragon-360/frame-149.webp','assets/360/dragon-360/frame-150.webp','assets/360/dragon-360/frame-151.webp','assets/360/dragon-360/frame-152.webp','assets/360/dragon-360/frame-153.webp','assets/360/dragon-360/frame-154.webp','assets/360/dragon-360/frame-155.webp','assets/360/dragon-360/frame-156.webp','assets/360/dragon-360/frame-157.webp','assets/360/dragon-360/frame-158.webp','assets/360/dragon-360/frame-159.webp','assets/360/dragon-360/frame-160.webp','assets/360/dragon-360/frame-161.webp','assets/360/dragon-360/frame-162.webp','assets/360/dragon-360/frame-163.webp','assets/360/dragon-360/frame-164.webp','assets/360/dragon-360/frame-165.webp','assets/360/dragon-360/frame-166.webp','assets/360/dragon-360/frame-167.webp','assets/360/dragon-360/frame-168.webp','assets/360/dragon-360/frame-169.webp','assets/360/dragon-360/frame-170.webp','assets/360/dragon-360/frame-171.webp','assets/360/dragon-360/frame-172.webp','assets/360/dragon-360/frame-173.webp','assets/360/dragon-360/frame-174.webp','assets/360/dragon-360/frame-175.webp','assets/360/dragon-360/frame-176.webp','assets/360/dragon-360/frame-177.webp','assets/360/dragon-360/frame-178.webp','assets/360/dragon-360/frame-179.webp','assets/360/dragon-360/frame-180.webp','assets/360/dragon-360/frame-181.webp','assets/360/dragon-360/frame-182.webp','assets/360/dragon-360/frame-183.webp','assets/360/dragon-360/frame-184.webp','assets/360/dragon-360/frame-185.webp','assets/360/dragon-360/frame-186.webp','assets/360/dragon-360/frame-187.webp','assets/360/dragon-360/frame-188.webp','assets/360/dragon-360/frame-189.webp','assets/360/dragon-360/frame-190.webp'],
+  raptor:['assets/360/raptor-360/frame-000.webp','assets/360/raptor-360/frame-001.webp','assets/360/raptor-360/frame-002.webp','assets/360/raptor-360/frame-003.webp','assets/360/raptor-360/frame-004.webp','assets/360/raptor-360/frame-005.webp','assets/360/raptor-360/frame-006.webp','assets/360/raptor-360/frame-007.webp','assets/360/raptor-360/frame-008.webp','assets/360/raptor-360/frame-009.webp','assets/360/raptor-360/frame-010.webp','assets/360/raptor-360/frame-011.webp','assets/360/raptor-360/frame-012.webp','assets/360/raptor-360/frame-013.webp','assets/360/raptor-360/frame-014.webp','assets/360/raptor-360/frame-015.webp','assets/360/raptor-360/frame-016.webp','assets/360/raptor-360/frame-017.webp','assets/360/raptor-360/frame-018.webp','assets/360/raptor-360/frame-019.webp','assets/360/raptor-360/frame-020.webp','assets/360/raptor-360/frame-021.webp','assets/360/raptor-360/frame-022.webp','assets/360/raptor-360/frame-023.webp','assets/360/raptor-360/frame-024.webp','assets/360/raptor-360/frame-025.webp','assets/360/raptor-360/frame-026.webp','assets/360/raptor-360/frame-027.webp','assets/360/raptor-360/frame-028.webp','assets/360/raptor-360/frame-029.webp','assets/360/raptor-360/frame-030.webp','assets/360/raptor-360/frame-031.webp','assets/360/raptor-360/frame-032.webp','assets/360/raptor-360/frame-033.webp','assets/360/raptor-360/frame-034.webp','assets/360/raptor-360/frame-035.webp','assets/360/raptor-360/frame-036.webp','assets/360/raptor-360/frame-037.webp','assets/360/raptor-360/frame-038.webp','assets/360/raptor-360/frame-039.webp','assets/360/raptor-360/frame-040.webp','assets/360/raptor-360/frame-041.webp','assets/360/raptor-360/frame-042.webp','assets/360/raptor-360/frame-043.webp','assets/360/raptor-360/frame-044.webp','assets/360/raptor-360/frame-045.webp','assets/360/raptor-360/frame-046.webp','assets/360/raptor-360/frame-047.webp','assets/360/raptor-360/frame-048.webp','assets/360/raptor-360/frame-049.webp','assets/360/raptor-360/frame-050.webp','assets/360/raptor-360/frame-051.webp','assets/360/raptor-360/frame-052.webp','assets/360/raptor-360/frame-053.webp','assets/360/raptor-360/frame-054.webp','assets/360/raptor-360/frame-055.webp','assets/360/raptor-360/frame-056.webp','assets/360/raptor-360/frame-057.webp','assets/360/raptor-360/frame-058.webp','assets/360/raptor-360/frame-059.webp','assets/360/raptor-360/frame-060.webp','assets/360/raptor-360/frame-061.webp','assets/360/raptor-360/frame-062.webp','assets/360/raptor-360/frame-063.webp','assets/360/raptor-360/frame-064.webp','assets/360/raptor-360/frame-065.webp','assets/360/raptor-360/frame-066.webp','assets/360/raptor-360/frame-067.webp','assets/360/raptor-360/frame-068.webp','assets/360/raptor-360/frame-069.webp','assets/360/raptor-360/frame-070.webp','assets/360/raptor-360/frame-071.webp','assets/360/raptor-360/frame-072.webp','assets/360/raptor-360/frame-073.webp','assets/360/raptor-360/frame-074.webp','assets/360/raptor-360/frame-075.webp','assets/360/raptor-360/frame-076.webp','assets/360/raptor-360/frame-077.webp','assets/360/raptor-360/frame-078.webp','assets/360/raptor-360/frame-079.webp','assets/360/raptor-360/frame-080.webp','assets/360/raptor-360/frame-081.webp','assets/360/raptor-360/frame-082.webp','assets/360/raptor-360/frame-083.webp','assets/360/raptor-360/frame-084.webp','assets/360/raptor-360/frame-085.webp','assets/360/raptor-360/frame-086.webp','assets/360/raptor-360/frame-087.webp','assets/360/raptor-360/frame-088.webp','assets/360/raptor-360/frame-089.webp','assets/360/raptor-360/frame-090.webp','assets/360/raptor-360/frame-091.webp','assets/360/raptor-360/frame-092.webp','assets/360/raptor-360/frame-093.webp','assets/360/raptor-360/frame-094.webp','assets/360/raptor-360/frame-095.webp','assets/360/raptor-360/frame-096.webp','assets/360/raptor-360/frame-097.webp','assets/360/raptor-360/frame-098.webp','assets/360/raptor-360/frame-099.webp','assets/360/raptor-360/frame-100.webp','assets/360/raptor-360/frame-101.webp','assets/360/raptor-360/frame-102.webp','assets/360/raptor-360/frame-103.webp','assets/360/raptor-360/frame-104.webp','assets/360/raptor-360/frame-105.webp','assets/360/raptor-360/frame-106.webp','assets/360/raptor-360/frame-107.webp','assets/360/raptor-360/frame-108.webp','assets/360/raptor-360/frame-109.webp','assets/360/raptor-360/frame-110.webp','assets/360/raptor-360/frame-111.webp','assets/360/raptor-360/frame-112.webp','assets/360/raptor-360/frame-113.webp','assets/360/raptor-360/frame-114.webp','assets/360/raptor-360/frame-115.webp','assets/360/raptor-360/frame-116.webp','assets/360/raptor-360/frame-117.webp','assets/360/raptor-360/frame-118.webp','assets/360/raptor-360/frame-119.webp','assets/360/raptor-360/frame-120.webp','assets/360/raptor-360/frame-121.webp','assets/360/raptor-360/frame-122.webp','assets/360/raptor-360/frame-123.webp','assets/360/raptor-360/frame-124.webp','assets/360/raptor-360/frame-125.webp','assets/360/raptor-360/frame-126.webp','assets/360/raptor-360/frame-127.webp','assets/360/raptor-360/frame-128.webp','assets/360/raptor-360/frame-129.webp','assets/360/raptor-360/frame-130.webp','assets/360/raptor-360/frame-131.webp','assets/360/raptor-360/frame-132.webp','assets/360/raptor-360/frame-133.webp','assets/360/raptor-360/frame-134.webp','assets/360/raptor-360/frame-135.webp','assets/360/raptor-360/frame-136.webp','assets/360/raptor-360/frame-137.webp','assets/360/raptor-360/frame-138.webp','assets/360/raptor-360/frame-139.webp','assets/360/raptor-360/frame-140.webp','assets/360/raptor-360/frame-141.webp','assets/360/raptor-360/frame-142.webp','assets/360/raptor-360/frame-143.webp','assets/360/raptor-360/frame-144.webp','assets/360/raptor-360/frame-145.webp','assets/360/raptor-360/frame-146.webp','assets/360/raptor-360/frame-147.webp','assets/360/raptor-360/frame-148.webp','assets/360/raptor-360/frame-149.webp','assets/360/raptor-360/frame-150.webp','assets/360/raptor-360/frame-151.webp','assets/360/raptor-360/frame-152.webp','assets/360/raptor-360/frame-153.webp','assets/360/raptor-360/frame-154.webp','assets/360/raptor-360/frame-155.webp','assets/360/raptor-360/frame-156.webp','assets/360/raptor-360/frame-157.webp','assets/360/raptor-360/frame-158.webp','assets/360/raptor-360/frame-159.webp','assets/360/raptor-360/frame-160.webp','assets/360/raptor-360/frame-161.webp','assets/360/raptor-360/frame-162.webp','assets/360/raptor-360/frame-163.webp','assets/360/raptor-360/frame-164.webp','assets/360/raptor-360/frame-165.webp','assets/360/raptor-360/frame-166.webp','assets/360/raptor-360/frame-167.webp','assets/360/raptor-360/frame-168.webp','assets/360/raptor-360/frame-169.webp','assets/360/raptor-360/frame-170.webp','assets/360/raptor-360/frame-171.webp']
+ };
+ var CFG={d14:{full:true,interval:42},d17:{full:true,interval:42},raptor:{full:true,interval:42}};
+ var DATA={
+  d14:{name:'Glowen<br>Dragon&nbsp;14"',eyebrow:'Pizzaofn · Gas',price:'74.990 kr.',sku:'#GLW-DRG-14',fuel:'Gas',temp:'500°C',time:'60 sek',size:'14"',wgt:'12 kg',desc:'Glowen Dragon 14" nær 500°C á augabragði og bakar ekta steinbakaða pizzu á 60–90 sekúndum. Rolling Flame™ loginn leikur jafnt yfir botninn — fyrir fullkomna áferð í hvert sinn.'},
+  d17:{name:'Glowen<br>Dragon&nbsp;17"',eyebrow:'Pizzaofn · Gas',price:'89.990 kr.',sku:'#GLW-DRG-17',fuel:'Gas',temp:'500°C',time:'60 sek',size:'17"',wgt:'15 kg',desc:'Glowen Dragon 17" gefur þér stærri pizzuflöt án þess að fórna hraðanum. Sama Rolling Flame™ tækni og 500°C hámarkshiti — nú með enn rýmara eldhólfi fyrir stærri pizzur.'},
+  raptor:{name:'Glowen<br>Raptor',eyebrow:'Pizzaofn · Viður & Gas',price:'129.990 kr.',sku:'#GLW-RPT-15',fuel:'Viður & gas',temp:'500°C',time:'90 sek',size:'15"',wgt:'18 kg',desc:'Glowen Raptor er margeldsneyti pizzaofn sem brennur bæði við og gasi. Kraftmikill logi og einstæð útlína — snillingsval bæði heima og úti.'}
+ };
+ var viewer=document.getElementById('viewer'),track=document.getElementById('track'),fill=document.getElementById('fill'),knob=document.getElementById('knob'),deg=document.getElementById('deg'),hint=document.getElementById('spinhint'),autobtn=document.getElementById('autobtn');
+ var pre=[],cur='d14',idx=0,N=0,auto=false,rafid=0,live=null,interval=130;
+
+ function build(model){
+  cur=model;viewer.querySelectorAll('.frame').forEach(function(e){e.remove()});
+  var urls=FRAMES[model];N=urls.length;var cfg=CFG[model]||{};interval=cfg.interval||130;
+  viewer.classList.toggle('fullrender',!!cfg.full);
+  live=document.createElement('img');live.className='frame on';live.alt='';live.decoding='sync';live.draggable=false;
+  viewer.insertBefore(live,viewer.firstChild);
+  pre=urls.map(function(u){var im=new Image();im.src=u;return im;});
+  idx=0;live.src=urls[0];show(0);
+ }
+ function show(i){i=((i%N)+N)%N;idx=i;if(live)live.src=FRAMES[cur][i];
+  var p=N>1?i/(N-1):0;fill.style.width=(p*100)+'%';knob.style.left=(p*100)+'%';deg.textContent=Math.round(p*360)+'°';}
+ build('d14');updateData(DATA['d14']);
+
+ var dragging=false,sx=0,si=0;
+ function down(x){dragging=true;sx=x;si=idx;viewer.classList.add('drag');stopAuto();}
+ function move(x){if(!dragging)return;var dx=x-sx;if(Math.abs(dx)>4)hint.classList.add('hide');
+  var step=viewer.clientWidth/(N*1.1);show(si+Math.round(dx/step));}
+ function up(){dragging=false;viewer.classList.remove('drag');}
+ viewer.addEventListener('mousedown',function(e){e.preventDefault();down(e.clientX);});
+ viewer.addEventListener('dragstart',function(e){e.preventDefault();});
+ window.addEventListener('mousemove',function(e){move(e.clientX);});
+ window.addEventListener('mouseup',up);
+ viewer.addEventListener('touchstart',function(e){down(e.touches[0].clientX);},{passive:true});
+ viewer.addEventListener('touchmove',function(e){move(e.touches[0].clientX);},{passive:true});
+ viewer.addEventListener('touchend',up);
+
+ var td=false;
+ track.addEventListener('mousedown',function(e){td=true;stopAuto();hint.classList.add('hide');fromTrack(e.clientX);});
+ window.addEventListener('mousemove',function(e){if(td)fromTrack(e.clientX);});
+ window.addEventListener('mouseup',function(){td=false;});
+ track.addEventListener('touchstart',function(e){stopAuto();fromTrack(e.touches[0].clientX);},{passive:true});
+ track.addEventListener('touchmove',function(e){fromTrack(e.touches[0].clientX);},{passive:true});
+ function fromTrack(x){var r=track.getBoundingClientRect();var p=Math.max(0,Math.min(1,(x-r.left)/r.width));show(Math.round(p*(N-1)));}
+
+ var acc=0,last=0;
+ function tick(t){if(!auto)return;if(!last)last=t;var dt=t-last;last=t;acc+=dt;var g=0;while(acc>=interval&&g<4){acc-=interval;show(idx+1);g++;}rafid=requestAnimationFrame(tick);}
+ var stopTimer=0;
+ function startAuto(){auto=true;last=0;autobtn.innerHTML='<i class="ti ti-player-pause"></i>';hint.classList.add('hide');clearTimeout(stopTimer);if(!(CFG[cur]&&CFG[cur].full))stopTimer=setTimeout(stopAuto,5200);rafid=requestAnimationFrame(tick);}
+ function stopAuto(){auto=false;autobtn.innerHTML='<i class="ti ti-player-play"></i>';clearTimeout(stopTimer);cancelAnimationFrame(rafid);}
+ autobtn.addEventListener('click',function(){auto?stopAuto():startAuto();});
+
+ var panCanvas=document.getElementById('pan-canvas'),panCtx=panCanvas.getContext('2d'),panning=false;
+ function fadeSwitch(newModel,d){
+  if(panning)return;
+  var fromSrc=live?live.src:null;
+  if(!fromSrc){stopAuto();build(newModel);if(CFG[newModel]&&CFG[newModel].full)startAuto();updateData(d);return;}
+  stopAuto();
+  var fromImg=new Image(),toImg=new Image(),started=false;
+  function tryStart(){
+   if(!fromImg.complete||!fromImg.naturalWidth)return;
+   if(!toImg.complete||!toImg.naturalWidth)return;
+   if(started)return;started=true;
+   var W=viewer.clientWidth,H=viewer.clientHeight,dpr=window.devicePixelRatio||1;
+   panCanvas.width=W*dpr;panCanvas.height=H*dpr;
+   panCanvas.style.width=W+'px';panCanvas.style.height=H+'px';
+   panCtx.setTransform(dpr,0,0,dpr,0,0);
+   panCanvas.style.display='block';
+   if(live)live.style.opacity='0';
+   panning=true;
+   var fromFit=!!(CFG[cur]&&CFG[cur].full),toFit=!!(CFG[newModel]&&CFG[newModel].full);
+   var DUR=360,start=null;
+   function ease(t){return t<0.5?2*t*t:-1+(4-2*t)*t;}
+   function blit(img,alpha,cover){
+    panCtx.globalAlpha=alpha;
+    var iw=img.naturalWidth,ih=img.naturalHeight,dw,dh;
+    if(cover){var ir=iw/ih,cr=W/H;if(ir>cr){dh=H;dw=dh*ir;}else{dw=W;dh=dw/ir};}
+    else{var ir2=iw/ih,cr2=W/H;if(ir2>cr2){dw=W;dh=dw/ir2;}else{dh=H;dw=dh*ir2};}
+    panCtx.drawImage(img,(W-dw)/2,(H-dh)/2,dw,dh);
+    panCtx.globalAlpha=1;
+   }
+   function tick(ts){
+    if(!start)start=ts;
+    var t=Math.min((ts-start)/DUR,1),e=ease(t);
+    panCtx.clearRect(0,0,W,H);
+    blit(fromImg,1-e,fromFit);
+    blit(toImg,e,toFit);
+    if(t<1){requestAnimationFrame(tick);}
+    else{
+     build(newModel);
+     updateData(d,true);
+     hint.classList.remove('hide');
+     if(CFG[newModel]&&CFG[newModel].full)startAuto();
+     requestAnimationFrame(function(){requestAnimationFrame(function(){
+      panCanvas.style.display='none';
+      panCtx.setTransform(1,0,0,1,0,0);
+      panning=false;
+     });});
+    }
+   }
+   requestAnimationFrame(tick);
+  }
+  fromImg.onload=tryStart;toImg.onload=tryStart;
+  fromImg.src=fromSrc;toImg.src=FRAMES[newModel][0];
+  if(fromImg.complete&&fromImg.naturalWidth)tryStart();
+  if(toImg.complete&&toImg.naturalWidth)tryStart();
+ }
+ function updateData(d,animate){
+  function applyData(){
+   document.querySelector('h1.prod').innerHTML=d.name;
+   document.getElementById('priceval').textContent=d.price;
+   document.getElementById('sfuel').textContent=d.fuel;
+   document.getElementById('stemp').textContent=d.temp;
+   document.getElementById('stime').textContent=d.time;
+   document.getElementById('ssize').textContent=d.size;
+   document.getElementById('swgt').textContent=d.wgt;
+   document.getElementById('proddesc').textContent=d.desc;
+   document.getElementById('eyebrow').textContent=d.eyebrow;
+   document.getElementById('prodsku').textContent=d.sku;
+  }
+  if(!animate){applyData();return;}
+  var heads=[document.querySelector('h1.prod'),document.getElementById('eyebrow'),document.querySelector('.sub'),document.getElementById('proddesc')];
+  var price=document.getElementById('priceval');
+  var vals=Array.from(document.querySelectorAll('.spec .val'));
+  heads.forEach(function(el){el.style.cssText+='transition:opacity .13s,transform .13s;opacity:0;transform:translateY(7px)'});
+  price.style.cssText+='transition:opacity .13s,transform .13s;opacity:0;transform:translateY(10px)';
+  vals.forEach(function(el){el.style.cssText+='transition:opacity .08s;opacity:0'});
+  setTimeout(function(){
+   applyData();
+   heads.forEach(function(el){el.style.opacity='1';el.style.transform='translateY(0)'});
+   price.style.opacity='1';price.style.transform='translateY(0)';
+   vals.forEach(function(el,i){setTimeout(function(){el.style.opacity='1'},i*30)});
+  },140);
+ }
+ document.getElementById('swatches').addEventListener('click',function(e){
+  var b=e.target.closest('.sw');if(!b)return;
+  var newModel=b.dataset.m;if(newModel===cur||panning)return;
+  document.querySelectorAll('.sw').forEach(function(s){s.classList.remove('active')});b.classList.add('active');
+  fadeSwitch(newModel,DATA[newModel]);
+ });
+
+ setTimeout(function(){if(!dragging&&!auto)startAuto();},1200);
+
+ (function(){
+  function attachGlow(els){
+   els.forEach(function(el){
+    el.addEventListener('mousemove',function(e){
+     var r=el.getBoundingClientRect();
+     var cx=r.left+r.width/2,cy=r.top+r.height/2;
+     var deg=Math.atan2(e.clientY-cy,e.clientX-cx)*180/Math.PI+90-325;
+     el.style.setProperty('--bg-angle',deg+'deg');
+     if(!el.classList.contains('glow-on'))el.classList.add('glow-on');
+    });
+    el.addEventListener('mouseleave',function(){el.classList.remove('glow-on');});
+   });
+  }
+  attachGlow(document.querySelectorAll('.spec'));
+  attachGlow(document.querySelectorAll('.cta'));
+ })();
+})();
+
+/* ── entrance loader controller — drives the counter, then lifts the furnace door ── */
+(function(){
+ function revealPage(){
+  var els=document.querySelectorAll('.rv');
+  els.forEach(function(el,i){setTimeout(function(){el.classList.add('in');},120+i*55);});
+ }
+ var loader=document.getElementById('loader');
+ if(!loader){revealPage();return;}
+ var fill=document.getElementById('ldrFill'),num=document.getElementById('ldrNum'),
+     tag=document.getElementById('ldrTag'),glow=loader.querySelector('.ldr-glow'),
+     dot=loader.querySelector('.ldr-dot');
+ var start=null,DUR=2300,done=false;
+ function ease(t){return 1-Math.pow(1-t,3);}        // easeOutCubic
+ function frame(ts){
+  if(start===null)start=ts;
+  var t=Math.min((ts-start)/DUR,1),e=ease(t),v=Math.round(e*100);
+  fill.style.width=(e*100)+'%';
+  num.innerHTML='<b>'+(v<10?'0'+v:v)+'</b>%';
+  glow.style.opacity=(0.12+e*0.88).toFixed(3);
+  tag.textContent=v<50?'Kveiki í glæðunum':v<92?'Hita ofninn':'Tilbúið';
+  if(t<1)requestAnimationFrame(frame);else finish();
+ }
+ setTimeout(finish,6500);   // hard-cap: never let the door stay shut (e.g. backgrounded tab throttling rAF)
+ function finish(){
+  if(done)return;done=true;
+  dot.classList.add('lit');
+  setTimeout(function(){dot.classList.add('flare');},130);
+  setTimeout(function(){loader.classList.add('lift');revealPage();},580);
+  setTimeout(function(){loader.classList.add('gone');},580+1300);
+ }
+ requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
